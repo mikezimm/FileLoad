@@ -3,8 +3,12 @@ export interface IFileLoadProps {
 }
 
 export interface IFileLoadState {
-  status: string[];
+  status1: string[];
+  status2: string[];
+  siteUrl: string;
+  webUrl: string;
   folder: string;
+  folderUrl: string;
   file: string;
-  location: string;
+  serverRelativePath: string;
 }

@@ -3,22 +3,31 @@ import styles from './FileLoad.module.scss';
 import { IFileLoadProps, IFileLoadState } from './IFileLoadProps';
 import { escape } from '@microsoft/sp-lodash-subset';
 
-import { loadHTMLFile } from './LoadHTML';
+import { loadHTMLFile1,loadHTMLFile2 } from './LoadHTML';
+import { Site } from '@pnp/sp/sites';
 
 export default class FileLoad extends React.Component<IFileLoadProps, IFileLoadState > {
 
   public constructor(props:IFileLoadProps){
     super(props);
+    // let web = `${window.location.hostname}/sites/TenantCDN/SecureScriptSample`;
+    const siteUrl = `/sites/TenantCDN/`;
+    const webUrl = `/sites/TenantCDN/SecureScriptSample`;
+    const folder = `Project1`;
 
-    const folder = '/sites/TenantCDN/SecureScriptSample/Project1';
     const file = 'Example_txt.txt';
-    const testLocation = `${folder}/${file}`;
+    const folderUrl = `${webUrl}/${folder}`;
+    const serverRelativePath = `${webUrl}/${folder}/${file}`;
 
     this.state = { 
-      status: ['waiting'],
+      status1: ['waiting'],
+      status2: ['waiting'],
+      siteUrl: siteUrl,
+      webUrl: webUrl,
       folder: folder,
+      folderUrl: folderUrl,
       file: file,
-      location: testLocation,
+      serverRelativePath: serverRelativePath ,
     };
 
   }
@@ -39,8 +48,9 @@ export default class FileLoad extends React.Component<IFileLoadProps, IFileLoadS
   
      public async componentDidMount() {
       //Not using this function because it just did not want to work.
-      let result = await loadHTMLFile( this.state.folder, this.state.file );
-      this.setState({ status: result });
+      let result1 = await loadHTMLFile1( this.state.folderUrl, this.state.file,  );
+      let result2 = await loadHTMLFile2( this.state.siteUrl, this.state.webUrl, this.state.folderUrl, this.state.serverRelativePath, this.state.file,  );
+      this.setState({ status1: result1, status2: result2 });
     }
 
   public render(): React.ReactElement<IFileLoadProps> {
@@ -53,9 +63,11 @@ export default class FileLoad extends React.Component<IFileLoadProps, IFileLoadS
             <div className={ styles.column }>
               <span className={ styles.title }>File Load status:</span>
               <br /><br />
-              <a href={`${this.state.location}`}>{`${this.state.location}`}</a>
+              <a href={`${this.state.serverRelativePath}`} style={{color: 'white'}}>{`${this.state.serverRelativePath}`}</a>
               <br /><br />
-              <span className={ styles.title }>{this.state.status}</span>
+              <span className={ styles.title }>{this.state.status1}</span>
+              <br /><br />
+              <span className={ styles.title }>{this.state.status2}</span>
             </div>
           </div>
         </div>
